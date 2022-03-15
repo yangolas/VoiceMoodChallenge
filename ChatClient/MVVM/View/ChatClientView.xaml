@@ -1,0 +1,86 @@
+﻿<Window x:Class="ChatClient.MVVM.View.ChatClientView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModel ="clr-namespace:ChatClient.MVVM.ViewModel"
+        xmlns:Convert="clr-namespace:Convert"      
+        Closing="Window_Closing"
+        mc:Ignorable="d" 
+        Height="200" Width="350"
+        MinHeight="380" MinWidth="650"
+        Title="Welcome to Client Voice Mood challenge" >
+    
+    <Window.DataContext>
+        <viewModel:ChatClientViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <Convert:BooleanToVisibilityHiddenConverter x:Key="IsVisibilityHidden" />
+    </Window.Resources>
+    <Grid>
+        <Grid Visibility="{Binding NotStartChat, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ResourceKey=IsVisibilityHidden}}"
+              Height="150" Width="300">
+            <!--<GroupBox Header="Welcome To Voice Mood Client Challenge" HorizontalContentAlignment="Stretch"  HorizontalAlignment="Stretch">-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+ 
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" 
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                        <Label Content="User Name:"/>
+                    <TextBox Text="{Binding ConnexionService.UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 VerticalContentAlignment="Center"
+                                 HorizontalContentAlignment="Center"
+                                 Margin="2"
+                                 MinWidth="150"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" 
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                        <Label Content="Port Server:"/>
+                        <TextBox x:Name="Text_Port" Text="{Binding ConnexionService.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 VerticalContentAlignment="Center"
+                                 HorizontalContentAlignment="Center"
+                                 Margin="2"
+                                 KeyUp="TextBoxPort_KeyUp"                                   
+                                 MinWidth="100"/>
+                    </StackPanel>
+                    <Button  Grid.Row="2" Content="Connect" HorizontalAlignment="Center" 
+                             VerticalAlignment="Center"
+                             Command="{Binding ConnectCommand}" />
+                </Grid>
+            <!--</GroupBox>-->
+        </Grid>
+        <Grid Visibility="{Binding StartChat, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ResourceKey=IsVisibilityHidden}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="0.1*"/>
+            </Grid.RowDefinitions>
+            <ListView   ItemsSource="{Binding ReceiveMessageService.ListMessages}" 
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        ScrollViewer.CanContentScroll="False">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn  DisplayMemberBinding="{Binding Path=., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Grid Grid.Row="1" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Text="{Binding SendMessageService.Message, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         KeyUp="TextBoxSend_KeyUp"/>
+                <Button Grid.Column="1" Content="Send" Command="{Binding SendCommand}"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
